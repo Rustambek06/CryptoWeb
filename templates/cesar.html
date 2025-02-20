@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шифрование Цезаря</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <section class="text-section">
+            <button onclick="location.href='{{ url_for('index') }}';">Вернуться в домашьную страницу</button>
+        </section>
+        <h1>Шифрование Цезаря</h1>
+    </header>
+
+    <section class="text-section">
+        <form id="cesar-form" method="POST" action="{{ url_for('cesar') }}">
+            <div>
+                <label for="plaintext">Введите текст:</label>
+                <input type="text" id="plaintext" name="plaintext" required value="{{ plaintext }}">
+            </div>
+            <div>
+                <label for="shift">Введите сдвиг:</label>
+                <input type="number" id="shift" name="shift" required value="{{ shift }}">
+            </div>
+            <div>
+                <button type="submit">Зашифровать</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="result-section">
+        <h2>Результат шифрования</h2>
+        <input type="text" id="result" readonly value="{{ encrypted_text }}">
+    </section>
+
+    <section class="result-section">
+        <h2>Анимация шифрования</h2>
+        <div>
+            {% if steps %}
+                {% for step in steps %}
+                    <div class="encryption-step">
+                        <span class="highlight">{{ step.original }}</span> -> {{ step.shifted }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+    <button id="chat-button">Чат с AI</button>
+    <div id="chat-box">
+        <div id="messages"></div>
+        <input type="text" id="chat-input" placeholder="Напишите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+    <script>
+        document.getElementById("chat-button").addEventListener("click", function() {
+            let chatBox = document.getElementById("chat-box");
+            chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+        });
+
+        function sendMessage() {
+            let input = document.getElementById("chat-input");
+            let message = input.value;
+            if (!message) return;
+
+            let messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<div><b>Вы:</b> " + message + "</div>";
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML += "<div><b>AI:</b> " + data.response + "</div>";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>

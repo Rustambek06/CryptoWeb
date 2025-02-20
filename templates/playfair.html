@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шифр Плейфера</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .playfair-square {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 5px;
+            margin: 20px 0;
+        }
+        .playfair-cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+        }
+        .encryption-step {
+            font-size: 18px;
+            margin-top: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <section class="text-section">
+            <button onclick="location.href='{{ url_for('index') }}';">Вернуться в домашьную страницу</button>
+        </section>
+        <h1>Шифр Плейфера</h1>
+    </header>
+
+    <section class="text-section">
+        <form method="POST" action="{{ url_for('playfair') }}">
+            <div>
+                <label for="message">Введите текст:</label>
+                <input type="text" id="message" name="message" required value="{{ message }}">
+            </div>
+            <div>
+                <label for="key">Введите ключ:</label>
+                <input type="text" id="key" name="key" required value="{{ key }}">
+            </div>
+            <div>
+                <label for="action">Выберите действие:</label>
+                <select id="action" name="action">
+                    <option value="encrypt" {% if action == 'encrypt' %}selected{% endif %}>Зашифровать</option>
+                    <option value="decrypt" {% if action == 'decrypt' %}selected{% endif %}>Расшифровать</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit">Выполнить</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="result-section">
+    <h2>Результат</h2>
+    <input type="text" id="result" readonly value="{{ result }}">
+</section>
+
+<section class="result-section">
+    <h2>Таблица Плейфера</h2>
+    <div class="playfair-square">
+        {% if playfair_square %}
+            {% for row in playfair_square %}
+                {% for cell in row %}
+                    <div class="playfair-cell">{{ cell }}</div>
+                {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p>Таблица Плейфера будет показана после шифрования или дешифрования.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="result-section">
+    <h2>Анимация шифрования/дешифрования с объяснениями</h2>
+    <div>
+        {% if steps %}
+            {% for step in steps %}
+                <div class="encryption-step">
+                    {{ step }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Шаги шифрования/дешифрования будут показаны после выполнения действия.</p>
+        {% endif %}
+    </div>
+</section>
+
+
+
+</div>
+
+</body>
+</html>

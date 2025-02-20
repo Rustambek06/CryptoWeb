@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книги по криптографии</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .book-container {
+            display: flex;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            max-width: 100%;
+        }
+
+        .book-cover {
+            width: 180px;
+            height: 260px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .book-info h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .book-info p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #4caf50;
+            }
+            .search-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+            }
+
+        #search {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 5px auto;
+            padding: 5px;
+        }
+
+        .text-section {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+        }
+
+        .text-section label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .text-section input[type="text"],
+        .text-section input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .text-section button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .text-section button:hover {
+            background-color: #45a049;
+        }
+
+        .rating {
+            font-size: 24px;
+            color: #ffd700; /* Золотой цвет */
+        }
+        #chat-button {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 15px 20px; /* Padding for the button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Chat button hover effect */
+#chat-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+        /* Chat box styles */
+        #chat-box {
+            display: none; /* Initially hidden */
+            position: fixed; /* Positioned relative to the viewport */
+            bottom: 60px; /* Position above the button */
+            right: 20px; /* Align to the right */
+            width: 300px; /* Fixed width */
+            height: 400px; /* Fixed height */
+            background: white; /* White background */
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 10px; /* Rounded corners */
+            padding: 10px; /* Padding inside the chat box */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            overflow-y: auto; /* Scrollable content */
+        }
+
+        /* Messages container */
+        #messages {
+            height: calc(100% - 80px); /* Full height minus input and button */
+            overflow-y: auto; /* Scrollable if content exceeds height */
+            margin-bottom: 10px; /* Space below messages */
+        }
+
+        /* Individual message styles */
+        #messages div {
+            margin-bottom: 5px; /* Space between messages */
+        }
+
+        /* Chat input styles */
+        #chat-input {
+            width: 100%; /* Full width of the chat box */
+            padding: 10px; /* Padding for input */
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 16px; /* Font size */
+        }
+
+        /* Send button styles */
+        #chat-input + button {
+            padding: 10px; /* Padding for the button */
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            margin-left: 5px; /* Space between input and button */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Send button hover effect */
+        #chat-input + button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+
+    </style>
+    <script>
+        function searchBooks() {
+            let input = document.getElementById("search").value.toLowerCase();
+            let books = document.getElementsByClassName("book-container");
+
+            for (let book of books) {
+                let title = book.getElementsByTagName("h2")[0].innerText.toLowerCase();
+                book.style.display = title.includes(input) ? "flex" : "none";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <section class="text-section">
+                <button onclick="location.href='{{ url_for('index') }}';">Вернуться в домашьную страницу</button>
+            </section>
+        </header>
+    </div>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="🔍 Найти книгу..." onkeyup="searchBooks()">
+    </div>
+    <div class="book-container">
+            <img src="static/books/1.jpg" alt="Обложка книги" class="book-cover">
+            <div class="book-info">
+                <h2>Шифры цивилизации: Коды, секретные послания и тайные знаки в истории человечества</h2>
+                <p><strong>Автор:</strong> Синклер Маккей</p>
+                <p><strong>Год издания:</strong> 2022</p>
+                <p><strong>Описание:</strong> С древних времен человек пытался изобрести шифры, которые невозможно взломать. Скрывающие связь влюбленные, секретные сообщества и церковные ордена, разведчики, дипломаты и военные – лишь небольшая часть тех, кто стремился любой ценой сохранить свои тайны.</p>
+                <p>Католические священники, сопровождавшие конкистадоров, были решительно настроены уничтожить все разнообразие письменных текстов, которое они нашли в городах туземцев. Так они поступали, по-видимому, потому, что считали своим долгом искоренить язычество в колониях. Это чудовищное преступление против истории. Потом представители других европейских держав с ужасом поймут, что натворили испанцы, но будет уже слишком поздно: от «праведного» огня удалось уберечь лишь несколько текстов, которые сразу же были перевезены в Европу для сохранения наследия уничтоженной цивилизации. Но ученых поставили в тупик глифы майя, превратившиеся в шифр, ключ к которому был утерян со смертью последнего носителя языка.</p>
+                <p>Перемещаясь между эпохами, историк и писатель Синклер Маккей рассказывает о самых знаменитых шифрах и дешифровщиках, хитроумных шпионах и контрразведчиках, поэтах и ученых, включавших в свои труды тайнопись, и, конечно же, о всевозможных кодах.</p>
+                <a href="static/books/shifry_civilizatsiipdf" download class="download-btn">Скачать книгу</a>
+                <div class="rating">
+                    ★★★★★
+                </div>
+            </div>
+    </div>
+
+    <div class="book-container">
+            <img src="static/books/2.jpg" alt="Обложка книги" class="book-cover">
+            <div class="book-info">
+                <h2>Как противостоять хакерским атакам</h2>
+                <p><strong>Автор:</strong> Роджер Граймс</p>
+                <p><strong>Год издания:</strong> 2024</p>
+                <p><strong>Описание:</strong> Кибербезопасностью сегодня озабочены все, от рядовых пользователей сети до владельцев крупных корпораций и государственных служащих. Но мало кто из них на самом деле знает, как функционирует мир хакерских атак и сетевых взломов изнутри. Эта книга – ваш проводник в мир информационной безопасности. Благодаря ей вы узнаете, какими методами пользуются самые продвинутые хакеры, как защититься от них и почему на самом деле это не так просто, как кажется.</>
+                <p></p>
+                <a href="static/books/kak_protivostoyat_hakerskim_atakam.pdf" download class="download-btn">Скачать книгу</a>
+                <div class="rating">
+                    ★★★★★
+                </div>
+        </div>
+    </div>
+
+    <div class="book-container">
+            <img src="static/books/3.jpg" alt="Обложка книги" class="book-cover">
+            <div class="book-info">
+                <h2>Как оценить риски в кибербезопасности. Лучшие инструменты и практики</h2>
+                <p><strong>Автор:</strong>Дуглас У. Хаббард</p>
+                <p><strong>Год издания:</strong> 2016</p>
+                <p><strong>Описание:</strong> Перед вами руководство по поиску и измерению рисков в кибербезопасности вашей компании. Устаревшим практикам оценки сетевых угроз автор противопоставляет методы, в основе которых лежат математические вычисления и специальные метрики. С помощью набора инструментов, описанных в его книге, вы сможете не только защититься от возможных угроз, но и приобрести новые инструменты для принятия более дальновидных решений по развитию бизнеса.</p>
+                <p></p>
+                <a href="static/books/kak_otsenit_riski_v_kiberbezopasnosti.pdf" download class="download-btn">Скачать книгу</a>
+                <div class="rating">
+                    ★★★★★
+                </div>
+            </div>
+    </div>
+
+    <div class="book-container">
+            <img src="static/books/4.jpg" alt="Обложка книги" class="book-cover">
+            <div class="book-info">
+                <h2>Манифест криптоанархиста</h2>
+                <p><strong>Автор:</strong>Ян Хеглер</p>
+                <p><strong>Год издания:</strong> 2017</p>
+                <p><strong>Описание:</strong> Криптоанархизм – философия, суть которой в том, чтобы использовать сильную криптографию для защиты приватности и личной свободы. Криптоанархисты – люди, которые поддерживают философию криптоанархизма. Они считают, что криптография защищает людей от слежки в Интернете и уверены, что законы математики сильнее человеческих законов и что без шифрования сообщений и информации личная жизнь людей пострадает. Их глобальная цель – Интернет доверия. Это явление можно отнести к сфере социально-политической идеологии, направленной на борьбу за свободу слова, тайну личности и частной переписки. Только в качестве основного инструмента этой борьбы криптоанархисты видят не стачки, митинги и уличные протесты, а математические алгоритмы и глубокое шифрование. Возможно ли реализовать в киберпространстве социально-технологические модели, которые многие современные эксперты считают утопиями? Книга знакомит с мнениями авторитетных специалистов в различных областях современной науки.</p>
+                <p></p>
+                <a href="static/books/manifest_kriptoanarhista.pdf" download class="download-btn">Скачать книгу</a>
+                <div class="rating">
+                    ★★★★★
+                </div>
+            </div>
+    </div>
+
+    <div class="book-container">
+            <img src="static/books/5.jpg" alt="Обложка книги" class="book-cover">
+            <div class="book-info">
+                <h2>Математика и криптография. Тайны шифров и логическое мышление</h2>
+                <p><strong>Автор:</strong>Р. В. Душкин</p>
+                <p><strong>Год издания:</strong> 2017</p>
+                <p><strong>Описание:</strong> Хочешь научиться хранить свои тайны, создавать зашифрованные послания и удивлять одноклассников познаниями в криптографии – науке о создании, использовании и взломе шифров? В этой книге тебя ждёт знакомство с тайными знаниями и умениями, которые доступны только избранным – шпионам, секретным агентам, учёным. Вместе мы научимся кодировать сообщения, используя разные методы шифровки, разгадывать уже существующие тайные послания, делать шифровальные машины и даже создавать свои оригинальные шифры и загадки!</p>
+                <p>У тебя есть уникальная возможность познакомиться с реальным миром тайных агентов и спецслужб, ведь все методы шифрования, описанные в книге, используются до сих пор! А вдруг ты сможешь создать свой уникальный метод шифровки?</p>
+                <p></p>
+                <a href="static/books/matematica_i_kriptografia.pdf" download class="download-btn">Скачать книгу</a>
+                <div class="rating">
+                    ★★★★★
+                </div>
+            </div>
+    </div>
+
+    <button id="chat-button">Чат с AI</button>
+    <div id="chat-box">
+        <div id="messages"></div>
+        <input type="text" id="chat-input" placeholder="Напишите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+    <script>
+        document.getElementById("chat-button").addEventListener("click", function() {
+            let chatBox = document.getElementById("chat-box");
+            chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+        });
+
+        function sendMessage() {
+            let input = document.getElementById("chat-input");
+            let message = input.value;
+            if (!message) return;
+
+            let messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<div><b>Вы:</b> " + message + "</div>";
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML += "<div><b>AI:</b> " + data.response + "</div>";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>

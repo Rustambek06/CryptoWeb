@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AES Шифрование и Дешифрование</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <section class="text-section">
+            <button onclick="location.href='{{ url_for('index') }}';">Вернуться в домашьную страницу</button>
+        </section>
+        <h1>AES Шифрование и Дешифрование</h1>
+    </header>
+
+    <section class="text-section">
+        <form method="POST" action="{{ url_for('aes') }}">
+            <div>
+                <label for="plaintext">Введите текст:</label>
+                <input type="text" id="plaintext" name="plaintext" required>
+            </div>
+            <div>
+                <label for="key">Введите ключ:</label>
+                <input type="text" id="key" name="key" required>
+            </div>
+            <div>
+                <button type="submit">Зашифровать</button>
+            </div>
+        </form>
+    </section>
+
+    {% if ciphertext %}
+    <section class="result-section">
+        <h2>Результаты:</h2>
+        <p><strong>Зашифрованный текст:</strong> {{ ciphertext }}</p>
+        <p><strong>Расшифрованный текст:</strong> {{ decrypted_text }}</p>
+
+
+        <h3>Дополнительная информация:</h3>
+        <p><strong>Текст в шестнадцатеричном формате:</strong> {{ plaintext_hex }}</p>
+        <p><strong>Ключ в шестнадцатеричном формате:</strong> {{ key_hex }}</p>
+    </section>
+    {% endif %}
+<section class="visualization-section">
+    <h2>Визуализация процесса шифрования и дешифрования</h2>
+    <div class="encryption-decryption">
+
+        <div class="encryption-visualization">
+            <h3>Шифрование</h3>
+            {% for steps in encryption_steps %}
+            <h4>Раунд {{ steps.round }}</h4>
+            <table>
+                <tr>
+                    <th>Шаг</th>
+                    <th>Состояние</th>
+                </tr>
+                {% if steps.sub_bytes %}
+                <tr>
+                    <td>SubBytes</td>
+                    <td>{{ steps.sub_bytes }}</td>
+                </tr>
+                {% endif %}
+                {% if steps.shift_rows %}
+                <tr>
+                    <td>ShiftRows</td>
+                    <td>{{ steps.shift_rows }}</td>
+                </tr>
+                {% endif %}
+                {% if steps.mix_columns %}
+                <tr>
+                    <td>MixColumns</td>
+                    <td>{{ steps.mix_columns }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>AddRoundKey</td>
+                    <td>{{ steps.add_round_key }}</td>
+                </tr>
+            </table>
+            {% endfor %}
+        </div>
+
+
+        <div class="decryption-visualization">
+            <h3>Дешифрование</h3>
+            {% for steps in decryption_steps %}
+            <h4>Раунд {{ steps.round }}</h4>
+            <table>
+                <tr>
+                    <th>Шаг</th>
+                    <th>Состояние</th>
+                </tr>
+                <tr>
+                    <td>AddRoundKey</td>
+                    <td>{{ steps.add_round_key }}</td>
+                </tr>
+                {% if steps.inv_mix_columns %}
+                <tr>
+                    <td>InvMixColumns</td>
+                    <td>{{ steps.inv_mix_columns }}</td>
+                </tr>
+                {% endif %}
+                {% if steps.inv_shift_rows %}
+                <tr>
+                    <td>InvShiftRows</td>
+                    <td>{{ steps.inv_shift_rows }}</td>
+                </tr>
+                {% endif %}
+                {% if steps.inv_sub_bytes %}
+                <tr>
+                    <td>InvSubBytes</td>
+                    <td>{{ steps.inv_sub_bytes }}</td>
+                </tr>
+                {% endif %}
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+</div>
+
+    <button id="chat-button">Чат с AI</button>
+    <div id="chat-box">
+        <div id="messages"></div>
+        <input type="text" id="chat-input" placeholder="Напишите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+    <script>
+        document.getElementById("chat-button").addEventListener("click", function() {
+            let chatBox = document.getElementById("chat-box");
+            chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+        });
+
+        function sendMessage() {
+            let input = document.getElementById("chat-input");
+            let message = input.value;
+            if (!message) return;
+
+            let messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<div><b>Вы:</b> " + message + "</div>";
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML += "<div><b>AI:</b> " + data.response + "</div>";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>

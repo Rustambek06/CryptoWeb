@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Криптография</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="{{ url_for('static', filename='images/index1.jpg') }}" alt="Криптография">
+    </header>
+
+    <section class="text-section">
+        <p>Криптография — это искусство и наука защиты информации от несанкционированного доступа и обеспечения ее конфиденциальности, целостности и подлинности.</p>
+    </section>
+
+    <section class="button-grid">
+        <button onclick="location.href='{{ url_for('cesar', lang=current_lang) }}';">Цезарь</button>
+        <button onclick="location.href='{{ url_for('playfair') }}';">Плейфейр</button>
+        <button onclick="location.href='{{ url_for('aes') }}';">AES</button>
+        <button onclick="location.href='{{ url_for('rsa_encrypt_page') }}';">RSA</button>
+        <button onclick="location.href='{{ url_for('sha256_page') }}';">SHA256</button>
+
+    </section>
+
+    <section class="bottom-section">
+        <div class="text">
+            <p>Криптография используется для защиты данных в различных сферах, таких как финансовые транзакции, электронная почта, и коммуникации в интернете.</p>
+        </div>
+    </section>
+
+    <section class="text-section">
+            <button onclick="location.href='{{ url_for('books_page') }}';">Раздел книг по криптографии</button>
+    </section>
+
+    <section class="second_image">
+        <img src="{{ url_for('static', filename='images/index2.jpg') }}" alt="Защита данных">
+    </section>
+
+</div>
+
+    <button id="chat-button">Чат с AI</button>
+    <div id="chat-box">
+        <div id="messages"></div>
+        <input type="text" id="chat-input" placeholder="Напишите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+    <script>
+        document.getElementById("chat-button").addEventListener("click", function() {
+            let chatBox = document.getElementById("chat-box");
+            chatBox.style.display = chatBox.style.display === "none" ? "block" : "none";
+        });
+
+        function sendMessage() {
+            let input = document.getElementById("chat-input");
+            let message = input.value;
+            if (!message) return;
+
+            let messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += "<div><b>Вы:</b> " + message + "</div>";
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                messagesDiv.innerHTML += "<div><b>AI:</b> " + data.response + "</div>";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+
+            input.value = "";
+        }
+    </script>
+
+</body>
+</html>
